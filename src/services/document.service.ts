@@ -1,94 +1,99 @@
-import { Injectable } from '@angular/core';
-import { Document, DocumentMetadata } from '../models/document.model';
-import { Observable, from, map, shareReplay, tap } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Document } from '../models/document.model';
+import { of, Observable } from 'rxjs';
+
+// Mock Data
+const MOCK_DOCUMENTS: Document[] = [
+  {
+    slug: 'getting-started-with-angular',
+    metadata: {
+      title: 'Getting Started with Angular',
+      description: 'A comprehensive guide to start your journey with the Angular framework.',
+      author: 'John Doe',
+      date: '2023-10-26',
+      tags: ['angular', 'framework', 'javascript', 'getting-started'],
+      category: 'Web Development'
+    },
+    htmlContent: '<h1>Welcome to Angular</h1><p>This is a sample document content. Angular is a platform for building mobile and desktop web applications.</p><p>Explore the official documentation to learn more about components, templates, and services.</p>',
+    pdfUrl: '/assets/documents/getting-started-with-angular.pdf'
+  },
+  {
+    slug: 'advanced-typescript-techniques',
+    metadata: {
+      title: 'Advanced TypeScript Techniques',
+      description: 'Explore advanced features of TypeScript to write more robust and maintainable code.',
+      author: 'Jane Smith',
+      date: '2023-09-15',
+      tags: ['typescript', 'advanced', 'programming'],
+      category: 'Web Development'
+    },
+    htmlContent: '<h1>Advanced TypeScript</h1><p>Generics, decorators, and more. Learn how to leverage the full power of TypeScript\'s type system.</p>',
+    pdfUrl: '/assets/documents/advanced-typescript-techniques.pdf'
+  },
+  {
+    slug: 'understanding-rxjs',
+    metadata: {
+      title: 'Understanding RxJS',
+      description: 'A deep dive into reactive programming with RxJS for managing asynchronous data streams.',
+      author: 'Peter Jones',
+      date: '2023-08-01',
+      tags: ['rxjs', 'reactive-programming', 'javascript'],
+      category: 'Web Development'
+    },
+    htmlContent: '<h1>RxJS Deep Dive</h1><p>Observables, operators, and subjects are the core concepts of RxJS. This document explains them in detail.</p>',
+    pdfUrl: '/assets/documents/understanding-rxjs.pdf'
+  },
+  {
+    slug: 'seo-for-modern-web-apps',
+    metadata: {
+      title: 'SEO for Modern Web Apps',
+      description: 'Best practices for search engine optimization in single-page applications (SPAs).',
+      author: 'Alice Williams',
+      date: '2023-11-05',
+      tags: ['seo', 'web-development', 'spa'],
+      category: 'Marketing'
+    },
+    htmlContent: '<h1>SEO for SPAs</h1><p>Learn how to make your app visible to search engines using techniques like server-side rendering and prerendering.</p>',
+    pdfUrl: '/assets/documents/seo-for-modern-web-apps.pdf'
+  }
+];
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DocumentService {
-  private documents$: Observable<Document[]>;
-  private allDocuments: Document[] = [];
-
-  constructor() {
-    this.documents$ = from(this.fetchAllDocuments()).pipe(
-      tap(docs => {
-        this.allDocuments = docs;
-      }),
-      shareReplay(1) // Cache the result and replay for subsequent subscribers
-    );
-  }
-
-  private async fetchAllDocuments(): Promise<Document[]> {
-    try {
-      const manifestResponse = await fetch('/documents/manifest.json');
-      if (!manifestResponse.ok) {
-        throw new Error('Could not fetch manifest.json');
-      }
-      const slugs: string[] = await manifestResponse.json();
-
-      const documentPromises = slugs.map(slug => this.fetchDocumentData(slug));
-      const documents = await Promise.all(documentPromises);
-      
-      // Filter out any undefined results if a document failed to load
-      return documents.filter((doc): doc is Document => doc !== undefined);
-    } catch (error) {
-      console.error("Error fetching all documents:", error);
-      return [];
-    }
-  }
-
-  private async fetchDocumentData(slug: string): Promise<Document | undefined> {
-    try {
-      const [metadataResponse, htmlResponse] = await Promise.all([
-        fetch(`/documents/${slug}/metadata.json`),
-        fetch(`/documents/${slug}/document.html`)
-      ]);
-
-      if (!metadataResponse.ok || !htmlResponse.ok) {
-        console.error(`Could not fetch data for slug: ${slug}`);
-        return undefined;
-      }
-      
-      const metadata: DocumentMetadata = await metadataResponse.json();
-      const htmlContent: string = await htmlResponse.text();
-
-      return {
-        slug,
-        metadata,
-        htmlContent,
-        pdfUrl: `/documents/${slug}/document.pdf`
-      };
-    } catch (error) {
-      console.error(`Error fetching document data for ${slug}:`, error);
-      return undefined;
-    }
-  }
+  private documents = signal<Document[]>(MOCK_DOCUMENTS);
 
   getDocuments(): Observable<Document[]> {
-    return this.documents$;
+    return of(this.documents());
   }
 
   getDocumentBySlug(slug: string): Observable<Document | undefined> {
-    return this.documents$.pipe(
-      map(docs => docs.find(doc => doc.slug === slug))
-    );
+    return of(this.documents().find(doc => doc.slug === slug));
   }
 
   getRelatedDocuments(currentDoc: Document): Document[] {
-    // This now uses the cached `allDocuments` array which is populated when `getDocuments` is first called
-    return this.allDocuments.filter(doc => 
-        doc.slug !== currentDoc.slug && 
-        (doc.metadata.category === currentDoc.metadata.category || doc.metadata.tags.some(tag => currentDoc.metadata.tags.includes(tag)))
-    ).slice(0, 3);
+    return this.documents()
+      .filter(doc => doc.slug !== currentDoc.slug) // Exclude the current document
+      .filter(doc => doc.metadata.category === currentDoc.metadata.category || doc.metadata.tags.some(tag => currentDoc.metadata.tags.includes(tag)))
+      .slice(0, 3); // Return up to 3 related documents
   }
 
-  getAllCategories(): string[] {
-    const categories = this.allDocuments.map(doc => doc.metadata.category);
-    return [...new Set(categories)];
+  getDocumentsByCategory(category: string): Observable<Document[]> {
+    return of(this.documents().filter(doc => doc.metadata.category === category));
   }
 
-  getAllTags(): string[] {
-    const tags = this.allDocuments.flatMap(doc => doc.metadata.tags);
-    return [...new Set(tags)];
+  getDocumentsByTag(tag: string): Observable<Document[]> {
+    return of(this.documents().filter(doc => doc.metadata.tags.includes(tag)));
+  }
+
+  getAllCategories(): Observable<string[]> {
+    const categories = this.documents().map(doc => doc.metadata.category);
+    return of([...new Set(categories)]);
+  }
+
+  getAllTags(): Observable<string[]> {
+    const tags = this.documents().flatMap(doc => doc.metadata.tags);
+    return of([...new Set(tags)]);
   }
 }

@@ -1,5 +1,8 @@
 {
   "name": "DocuStax",
   "description": "A static document management system for hosting a public-facing library of OCR'd PDF documents with HTML versions, featuring full-text search and filtering.",
+  "build": {
+    "outputPath": "dist/cloudflare"
+  },
   "requestFramePermissions": []
 }

@@ -7,17 +7,17 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <header class="bg-gray-800 text-white shadow-md">
+    <header class="bg-gray-800 text-white shadow-md sticky top-0 z-50">
       <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
         <a routerLink="/" class="text-2xl font-bold hover:text-gray-300">
           DocuStax
         </a>
         <div class="hidden md:flex items-center space-x-6">
-          <a routerLink="/" routerLinkActive="text-yellow-400" [routerLinkActiveOptions]="{exact: true}" class="hover:text-yellow-400 transition-colors">Home</a>
-          <a routerLink="/archive" routerLinkActive="text-yellow-400" class="hover:text-yellow-400 transition-colors">Archive</a>
-          <a routerLink="/faq" routerLinkActive="text-yellow-400" class="hover:text-yellow-400 transition-colors">FAQ</a>
-          <a routerLink="/about" routerLinkActive="text-yellow-400" class="hover:text-yellow-400 transition-colors">About</a>
-          <a routerLink="/contact" routerLinkActive="text-yellow-400" class="hover:text-yellow-400 transition-colors">Contact</a>
+          <a routerLink="/" routerLinkActive="text-primary-400" [routerLinkActiveOptions]="{exact: true}" class="hover:text-primary-400 transition-colors">Home</a>
+          <a routerLink="/browse" routerLinkActive="text-primary-400" class="hover:text-primary-400 transition-colors">Browse</a>
+          <a routerLink="/categories" routerLinkActive="text-primary-400" class="hover:text-primary-400 transition-colors">Categories</a>
+          <a routerLink="/tags" routerLinkActive="text-primary-400" class="hover:text-primary-400 transition-colors">Tags</a>
+          <a routerLink="/faq" routerLinkActive="text-primary-400" class="hover:text-primary-400 transition-colors">FAQ</a>
         </div>
         <!-- Mobile menu button -->
         <div class="md:hidden">
@@ -29,11 +29,11 @@ import { CommonModule } from '@angular/common';
       <!-- Mobile menu -->
       @if (isMobileMenuOpen()) {
         <div class="md:hidden bg-gray-800">
-            <a routerLink="/" routerLinkActive="text-yellow-400" [routerLinkActiveOptions]="{exact: true}" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Home</a>
-            <a routerLink="/archive" routerLinkActive="text-yellow-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Archive</a>
-            <a routerLink="/faq" routerLinkActive="text-yellow-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">FAQ</a>
-            <a routerLink="/about" routerLinkActive="text-yellow-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">About</a>
-            <a routerLink="/contact" routerLinkActive="text-yellow-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Contact</a>
+            <a routerLink="/" routerLinkActive="text-primary-400" [routerLinkActiveOptions]="{exact: true}" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Home</a>
+            <a routerLink="/browse" routerLinkActive="text-primary-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Browse</a>
+            <a routerLink="/categories" routerLinkActive="text-primary-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Categories</a>
+            <a routerLink="/tags" routerLinkActive="text-primary-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">Tags</a>
+            <a routerLink="/faq" routerLinkActive="text-primary-400" class="block py-2 px-4 text-sm hover:bg-gray-700" (click)="toggleMobileMenu()">FAQ</a>
         </div>
       }
     </header>
@@ -53,7 +53,7 @@ import { CommonModule } from '@angular/common';
             <div class="flex flex-col space-y-2">
               <span class="font-bold">Navigate</span>
               <a routerLink="/" class="text-gray-400 hover:text-white">Home</a>
-              <a routerLink="/archive" class="text-gray-400 hover:text-white">Archive</a>
+              <a routerLink="/browse" class="text-gray-400 hover:text-white">Browse</a>
               <a routerLink="/about" class="text-gray-400 hover:text-white">About Us</a>
             </div>
             <div class="flex flex-col space-y-2">

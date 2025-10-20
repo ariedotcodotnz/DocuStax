@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
@@ -67,15 +67,9 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeComponent {
   private documentService = inject(DocumentService);
-  recentDocuments = signal<Document[]>([]);
-  categories = signal<string[]>([]);
-  tags = signal<string[]>([]);
 
-  constructor() {
-    this.documentService.getDocuments().subscribe(docs => {
-      this.recentDocuments.set(docs.sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()).slice(0, 3));
-    });
-    this.documentService.getAllCategories().subscribe(categories => this.categories.set(categories));
-    this.documentService.getAllTags().subscribe(tags => this.tags.set(tags));
-  }
+  // FIX: Replaced signals and constructor logic with computed signals for a more reactive and correct approach.
+  recentDocuments = computed(() => this.documentService.documents().slice(0, 3));
+  categories = computed(() => this.documentService.getAllCategories());
+  tags = computed(() => this.documentService.getAllTags());
 }

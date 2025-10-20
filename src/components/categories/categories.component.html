@@ -1,0 +1,38 @@
+<div class="space-y-12">
+  <header class="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
+    <h1 class="text-4xl font-extrabold text-gray-800 dark:text-white">Browse by Category</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300 mt-2">Explore collections of documents organized by category.</p>
+  </header>
+
+  @if (!isLoaded()) {
+    <p class="text-center text-gray-500 py-8">Loading categories...</p>
+  } @else {
+    <div class="space-y-12">
+      @for (group of categoryGroups(); track group.name) {
+        <section>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-white">{{ group.name }}</h2>
+            <a [routerLink]="['/category', group.name]" class="text-primary-600 dark:text-primary-400 font-semibold hover:underline">View all &rarr;</a>
+          </div>
+          <div class="relative">
+            <div class="flex space-x-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              @for(doc of group.documents; track doc.slug) {
+                <div class="flex-shrink-0 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+                  <div class="p-6 flex-grow">
+                    <h3 class="text-xl font-bold mb-2 h-16">
+                      <a [routerLink]="['/doc', doc.slug]" class="text-gray-800 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors">{{ doc.metadata.title }}</a>
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 h-24 overflow-hidden text-ellipsis">{{ doc.metadata.description }}</p>
+                  </div>
+                  <div class="bg-gray-50 dark:bg-gray-700/50 px-6 py-3 mt-auto">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ doc.metadata.date | date:'longDate' }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+    </div>
+  }
+</div>

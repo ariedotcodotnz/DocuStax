@@ -11,12 +11,20 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./components/document-view/document-view.component').then(m => m.DocumentViewComponent),
   },
   {
-    path: 'archive',
+    path: 'browse',
     loadComponent: () => import('./components/archive/archive.component').then(m => m.ArchiveComponent),
+  },
+  {
+    path: 'categories',
+    loadComponent: () => import('./components/categories/categories.component').then(m => m.CategoriesComponent),
   },
   {
     path: 'category/:category',
     loadComponent: () => import('./components/category-list/category-list.component').then(m => m.CategoryListComponent),
+  },
+  {
+    path: 'tags',
+    loadComponent: () => import('./components/tags/tags.component').then(m => m.TagsComponent),
   },
   {
     path: 'tag/:tag',
@@ -37,6 +45,10 @@ export const APP_ROUTES: Routes = [
   {
     path: 'legal',
     loadComponent: () => import('./components/legal/legal.component').then(m => m.LegalComponent),
+  },
+  { 
+    path: 'archive', // Redirect old archive link to the new browse page
+    redirectTo: 'browse' 
   },
   {
     path: '**',

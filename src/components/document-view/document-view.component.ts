@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, effect } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Title, Meta, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
-import { switchMap } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-document-view',
@@ -79,8 +79,26 @@ export class DocumentViewComponent {
   private metaService = inject(Meta);
   private sanitizer = inject(DomSanitizer);
 
-  document = signal<Document | undefined>(undefined);
-  relatedDocuments = signal<Document[]>([]);
+  // FIX: Refactored to use computed signals based on route params and document service data.
+  // This fixes the incorrect use of switchMap with a non-observable return value and also resolves potential race conditions.
+  private paramMap = toSignal(this.route.paramMap);
+
+  document = computed(() => {
+    const slug = this.paramMap()?.get('slug');
+    if (!slug) {
+      return undefined;
+    }
+    return this.documentService.getDocumentBySlug(slug);
+  });
+
+  relatedDocuments = computed(() => {
+    const doc = this.document();
+    if (doc) {
+      return this.documentService.getRelatedDocuments(doc);
+    }
+    return [];
+  });
+
   sanitizedHtmlContent = computed<SafeHtml | undefined>(() => {
     const doc = this.document();
     if (doc) {
@@ -110,18 +128,6 @@ export class DocumentViewComponent {
   });
 
   constructor() {
-    this.route.paramMap.pipe(
-      switchMap(params => {
-        const slug = params.get('slug');
-        return this.documentService.getDocumentBySlug(slug!);
-      })
-    ).subscribe(doc => {
-      this.document.set(doc);
-      if (doc) {
-        this.relatedDocuments.set(this.documentService.getRelatedDocuments(doc));
-      }
-    });
-
     effect(() => {
       const doc = this.document();
       if (doc) {

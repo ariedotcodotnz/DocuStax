@@ -11,7 +11,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Styled%20with-TailwindCSS-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-project-structure) • [Contributing](#-contributing)
+[Features](#-features) • [Demo]([#-demo](https://847c818f.docustax.pages.dev/#/)) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-project-structure) • [Contributing](#-contributing)
 
 </div>
 

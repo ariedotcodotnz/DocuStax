@@ -7,8 +7,21 @@
     </p>
   </section>
 
-  <section>
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Recent Documents</h2>
+  @if (error()) {
+    <app-error
+      type="network-error"
+      [title]="'Failed to Load Documents'"
+      [message]="error()!"
+      [showBrowseButton]="false">
+    </app-error>
+  } @else if (!isLoaded()) {
+    <div class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      <p class="mt-4 text-gray-500">Loading documents...</p>
+    </div>
+  } @else {
+    <section>
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Recent Documents</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @for (doc of recentDocuments(); track doc.slug) {
         <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
@@ -49,5 +62,6 @@
           <a [routerLink]="['/tag', tag]" class="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full hover:bg-gray-200">{{ tag }}</a>
         }
       </div>
-  </section>
+    </section>
+  }
 </div>

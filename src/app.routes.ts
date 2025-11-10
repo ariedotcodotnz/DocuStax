@@ -46,12 +46,16 @@ export const APP_ROUTES: Routes = [
     path: 'legal',
     loadComponent: () => import('./components/legal/legal.component').then(m => m.LegalComponent),
   },
-  { 
+  {
     path: 'archive', // Redirect old archive link to the new browse page
-    redirectTo: 'browse' 
+    redirectTo: 'browse'
+  },
+  {
+    path: '404',
+    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent),
   },
   {
     path: '**',
-    redirectTo: '',
+    loadComponent: () => import('./components/not-found/not-found.component').then(m => m.NotFoundComponent),
   },
 ];

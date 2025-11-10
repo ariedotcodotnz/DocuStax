@@ -7,9 +7,11 @@ import { Document } from '../models/document.model';
 export class DocumentService {
   private _documents = signal<Document[]>([]);
   private _isLoaded = signal(false);
+  private _error = signal<string | null>(null);
 
   public readonly documents = this._documents.asReadonly();
   public readonly isLoaded = this._isLoaded.asReadonly();
+  public readonly error = this._error.asReadonly();
 
   constructor() {
     this.loadDocuments();
@@ -20,14 +22,22 @@ export class DocumentService {
 
     try {
       const manifestResponse = await fetch('documents/manifest.json');
-      if (!manifestResponse.ok) throw new Error('Failed to load manifest.json');
+      if (!manifestResponse.ok) {
+        throw new Error(`Failed to load manifest.json: ${manifestResponse.status} ${manifestResponse.statusText}`);
+      }
       const slugs: string[] = await manifestResponse.json();
 
       const docs: Document[] = await Promise.all(slugs.map(async (slug) => {
         const metaResponse = await fetch(`documents/${slug}/metadata.json`);
+        if (!metaResponse.ok) {
+          throw new Error(`Failed to load metadata for ${slug}: ${metaResponse.status}`);
+        }
         const metadata = await metaResponse.json();
 
         const htmlResponse = await fetch(`documents/${slug}/document.html`);
+        if (!htmlResponse.ok) {
+          throw new Error(`Failed to load HTML for ${slug}: ${htmlResponse.status}`);
+        }
         let htmlContent = await htmlResponse.text();
 
         // Extract styles from head and body content from full HTML document
@@ -54,8 +64,11 @@ export class DocumentService {
       }));
       
       this._documents.set(docs.sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()));
+      this._error.set(null);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load documents';
       console.error("Failed to load documents:", error);
+      this._error.set(errorMessage);
       this._documents.set([]);
     } finally {
       this._isLoaded.set(true);

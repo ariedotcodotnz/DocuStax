@@ -55,6 +55,37 @@ export class DocumentService {
           htmlContent = styles + bodyMatch[1];
         }
 
+        // Fix relative image and asset paths to absolute paths
+        // Replace src="slug_files/..." with src="documents/slug/slug_files/..."
+        htmlContent = htmlContent.replace(
+          /src="([^"]*_files\/[^"]*)"/gi,
+          `src="documents/${slug}/$1"`
+        );
+
+        // Also fix src='...' with single quotes
+        htmlContent = htmlContent.replace(
+          /src='([^']*_files\/[^']*)'/gi,
+          `src="documents/${slug}/$1"`
+        );
+
+        // Fix href for any linked assets (double quotes)
+        htmlContent = htmlContent.replace(
+          /href="([^"]*_files\/[^"]*)"/gi,
+          `href="documents/${slug}/$1"`
+        );
+
+        // Fix href with single quotes
+        htmlContent = htmlContent.replace(
+          /href='([^']*_files\/[^']*)'/gi,
+          `href="documents/${slug}/$1"`
+        );
+
+        // Fix background images in inline styles
+        htmlContent = htmlContent.replace(
+          /url\((['"]?)([^'"()]*_files\/[^'"()]*)\1\)/gi,
+          `url("documents/${slug}/$2")`
+        );
+
         return {
           slug,
           metadata,

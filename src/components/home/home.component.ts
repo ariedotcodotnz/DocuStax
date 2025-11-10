@@ -3,11 +3,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
 import { RouterLink } from '@angular/router';
+import { ErrorComponent } from '../error/error.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe],
+  imports: [CommonModule, RouterLink, DatePipe, ErrorComponent],
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -18,4 +19,6 @@ export class HomeComponent {
   recentDocuments = computed(() => this.documentService.documents().slice(0, 3));
   categories = computed(() => this.documentService.getAllCategories());
   tags = computed(() => this.documentService.getAllTags());
+  error = this.documentService.error;
+  isLoaded = this.documentService.isLoaded;
 }

@@ -26,9 +26,24 @@ export class DocumentService {
       const docs: Document[] = await Promise.all(slugs.map(async (slug) => {
         const metaResponse = await fetch(`documents/${slug}/metadata.json`);
         const metadata = await metaResponse.json();
-        
+
         const htmlResponse = await fetch(`documents/${slug}/document.html`);
-        const htmlContent = await htmlResponse.text();
+        let htmlContent = await htmlResponse.text();
+
+        // Extract styles from head and body content from full HTML document
+        let styles = '';
+        const headMatch = htmlContent.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+        if (headMatch) {
+          const styleMatches = headMatch[1].match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+          if (styleMatches) {
+            styles = styleMatches.join('\n');
+          }
+        }
+
+        const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        if (bodyMatch) {
+          htmlContent = styles + bodyMatch[1];
+        }
 
         return {
           slug,

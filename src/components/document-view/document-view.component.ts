@@ -20,6 +20,8 @@ export class DocumentViewComponent {
   private metaService = inject(Meta);
   private sanitizer = inject(DomSanitizer);
 
+  window = window;
+
   // FIX: Refactored to use computed signals based on route params and document service data.
   // This fixes the incorrect use of switchMap with a non-observable return value and also resolves potential race conditions.
   private paramMap = toSignal(this.route.paramMap);

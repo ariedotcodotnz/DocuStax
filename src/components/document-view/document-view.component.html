@@ -54,8 +54,8 @@
         <div class="space-y-4">
           @for(relatedDoc of relatedDocuments(); track relatedDoc.slug) {
             <div class="bg-white rounded-lg p-4 border hover:shadow-md transition-shadow">
-              <h3 class="font-bold">
-                <a [routerLink]="['/doc', relatedDoc.slug]" class="text-gray-800 hover:text-blue-600 transition-colors">{{ relatedDoc.metadata.title }}</a>
+              <h3 class="font-bold mb-1">
+                <a [routerLink]="['/doc', relatedDoc.slug]" class="text-gray-800 hover:text-blue-600 transition-colors line-clamp-2">{{ relatedDoc.metadata.title }}</a>
               </h3>
               <p class="text-sm text-gray-500">{{ relatedDoc.metadata.category }}</p>
             </div>

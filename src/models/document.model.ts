@@ -13,4 +13,5 @@ export interface Document {
   metadata: DocumentMetadata;
   htmlContent: string;
   pdfUrl: string;
+  thumbnailUrl?: string;
 }

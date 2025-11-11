@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, inject, computed, effect } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Title, Meta, SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
+import { SeoService } from '../../services/seo.service';
 import { Document } from '../../models/document.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -16,8 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class DocumentViewComponent {
   private route = inject(ActivatedRoute);
   private documentService = inject(DocumentService);
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
+  private seoService = inject(SeoService);
   private sanitizer = inject(DomSanitizer);
 
   window = window;
@@ -73,13 +73,25 @@ export class DocumentViewComponent {
   constructor() {
     effect(() => {
       const doc = this.document();
-      if (doc) {
-        const title = `${doc.metadata.title} | DocuStax`;
-        this.titleService.setTitle(title);
-        this.metaService.updateTag({ name: 'description', content: doc.metadata.description });
-        this.metaService.updateTag({ property: 'og:title', content: title });
-        this.metaService.updateTag({ property: 'og:description', content: doc.metadata.description });
-        this.metaService.updateTag({ property: 'og:type', content: 'article' });
+      const slug = this.paramMap()?.get('slug');
+
+      if (doc && slug) {
+        // Get thumbnail if available
+        const thumbnail = doc.thumbnailUrl ? `${window.location.origin}/${doc.thumbnailUrl}` : undefined;
+
+        this.seoService.updateMetaTags({
+          title: doc.metadata.title,
+          description: doc.metadata.description,
+          image: thumbnail,
+          keywords: [...doc.metadata.tags, doc.metadata.category],
+          author: doc.metadata.author,
+          publishedDate: doc.metadata.date,
+          tags: doc.metadata.tags,
+          url: `/doc/${slug}`
+        });
+      } else if (!doc && slug) {
+        // Document not found - set default SEO
+        this.seoService.setDefaultMetaTags();
       }
     });
   }

@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "ng serve",
-    "build": "npm run build:thumbnails && ng build && npm run build:sitemap",
+    "dev": "npm run build:manifest && ng serve",
+    "build": "npm run build:manifest && npm run build:thumbnails && ng build && npm run build:sitemap",
+    "build:manifest": "node scripts/generate-manifest.mjs",
     "build:thumbnails": "node scripts/generate-thumbnails.mjs",
     "build:sitemap": "node scripts/generate-sitemap.mjs",
     "preview": "ng serve --configuration=production"

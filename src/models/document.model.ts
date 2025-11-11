@@ -1,3 +1,7 @@
+export interface Person {
+  firstname: string;
+  lastname: string;
+}
 
 export interface DocumentMetadata {
   title: string;
@@ -6,6 +10,7 @@ export interface DocumentMetadata {
   date: string;
   tags: string[];
   category: string;
+  people: Person[];
 }
 
 export interface Document {

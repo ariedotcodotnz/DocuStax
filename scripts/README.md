@@ -1,8 +1,33 @@
 # DocuStax Build Scripts
 
-This directory contains build-time scripts for generating thumbnails and sitemaps.
+This directory contains build-time scripts for generating manifests, thumbnails, and sitemaps.
 
 ## Scripts
+
+### generate-manifest.mjs
+
+Automatically generates the `documents/manifest.json` file by scanning the documents directory for all document folders.
+
+**How it works:**
+- Scans the `documents/` directory for subdirectories
+- Each subdirectory containing a `metadata.json` file is considered a document
+- Generates `manifest.json` with an alphabetically sorted list of document slugs
+
+**Usage:**
+
+```bash
+# Generate manifest
+node scripts/generate-manifest.mjs
+
+# Or via npm
+npm run build:manifest
+```
+
+**Output:**
+- Creates/updates `documents/manifest.json`
+- Lists all document slugs found in the documents directory
+
+**Note:** You no longer need to manually update `manifest.json`. Simply add a new folder with a `metadata.json` file to the documents directory, and the script will automatically detect it during the next build or dev run.
 
 ### generate-thumbnails.mjs
 
@@ -62,15 +87,25 @@ npm run build
 ```
 
 This executes:
-1. `npm run build:thumbnails` - Generate thumbnails
-2. `ng build` - Build Angular application
-3. `npm run build:sitemap` - Generate sitemap
+1. `npm run build:manifest` - Generate document manifest
+2. `npm run build:thumbnails` - Generate thumbnails
+3. `ng build` - Build Angular application
+4. `npm run build:sitemap` - Generate sitemap
+
+The manifest is also automatically generated when running the dev server:
+
+```bash
+npm run dev
+```
 
 ## Manual Execution
 
 You can run scripts individually:
 
 ```bash
+# Generate manifest only
+npm run build:manifest
+
 # Generate thumbnails only
 npm run build:thumbnails
 

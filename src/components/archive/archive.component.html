@@ -32,6 +32,12 @@
       @for(tag of tags().slice(1); track tag) { <option [value]="tag">{{ tag }}</option> }
     </select>
 
+    <!-- People Filter -->
+    <select [ngModel]="selectedPerson()" (ngModelChange)="selectedPerson.set($event)" class="w-full md:w-auto border rounded-lg px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      <option value="All People">All People</option>
+      @for(person of people().slice(1); track person) { <option [value]="person">{{ person }}</option> }
+    </select>
+
     <!-- View Switcher -->
     <div class="flex items-center bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
       <button (click)="setViewMode('card')" [class]="viewMode() === 'card' ? 'bg-white dark:bg-gray-900 text-primary-600' : 'text-gray-500'" class="p-2 rounded-md transition-colors">

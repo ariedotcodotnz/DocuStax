@@ -31,6 +31,14 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./components/tag-list/tag-list.component').then(m => m.TagListComponent),
   },
   {
+    path: 'people',
+    loadComponent: () => import('./components/people/people.component').then(m => m.PeopleComponent),
+  },
+  {
+    path: 'person/:firstname/:lastname',
+    loadComponent: () => import('./components/person-list/person-list.component').then(m => m.PersonListComponent),
+  },
+  {
     path: 'about',
     loadComponent: () => import('./components/about/about.component').then(m => m.AboutComponent),
   },

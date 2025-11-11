@@ -4,5 +4,10 @@
   "author": "Naenae College Board of Trustees",
   "date": "2025-06-26",
   "tags": ["board of trustees", "minutes", "Naenae College"],
-  "category": "Meeting Minutes"
+  "category": "Meeting Minutes",
+  "people": [
+    { "firstname": "John", "lastname": "Smith" },
+    { "firstname": "Sarah", "lastname": "Johnson" },
+    { "firstname": "Robert", "lastname": "Wilson" }
+  ]
 }

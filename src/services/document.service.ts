@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Document } from '../models/document.model';
+import { Document, Person } from '../models/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -145,5 +145,26 @@ export class DocumentService {
   getAllTags(): string[] {
     const tags = this.documents().flatMap(doc => doc.metadata.tags);
     return [...new Set(tags)];
+  }
+
+  getAllPeople(): Person[] {
+    const people = this.documents().flatMap(doc => doc.metadata.people || []);
+    // Remove duplicates based on firstname and lastname
+    const uniquePeople = people.reduce((acc, person) => {
+      const key = `${person.firstname}|${person.lastname}`;
+      if (!acc.has(key)) {
+        acc.set(key, person);
+      }
+      return acc;
+    }, new Map<string, Person>());
+    return Array.from(uniquePeople.values());
+  }
+
+  getDocumentsByPerson(firstname: string, lastname: string): Document[] {
+    return this.documents().filter(doc =>
+      (doc.metadata.people || []).some(
+        person => person.firstname === firstname && person.lastname === lastname
+      )
+    );
   }
 }

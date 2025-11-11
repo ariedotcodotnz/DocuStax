@@ -1,0 +1,32 @@
+<div class="space-y-8">
+  <h1 class="text-4xl font-extrabold text-gray-800 dark:text-white">
+    Person: <span class="text-blue-600 dark:text-blue-400">{{ firstname() }} {{ lastname() }}</span>
+  </h1>
+
+  <div class="space-y-6">
+    @for (doc of documents(); track doc.slug) {
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ doc.metadata.date | date:'longDate' }} &bull; {{ doc.metadata.category }}</p>
+        <h2 class="text-2xl font-bold mb-2">
+          <a [routerLink]="['/doc', doc.slug]" class="text-gray-800 dark:text-white hover:text-primary-600 transition-colors line-clamp-2">{{ doc.metadata.title }}</a>
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">{{ doc.metadata.description }}</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          @for (tag of doc.metadata.tags; track tag) {
+            <a [routerLink]="['/tag', tag]" class="text-xs font-medium px-2 py-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">{{ tag }}</a>
+          }
+        </div>
+        <div class="flex flex-wrap gap-2">
+          @for (person of doc.metadata.people; track person.firstname + ' ' + person.lastname) {
+            <a [routerLink]="['/person', person.firstname, person.lastname]"
+               [class]="'text-xs font-medium px-2 py-1 rounded-full ' + (person.firstname === firstname() && person.lastname === lastname() ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-900')">
+              {{ person.firstname }} {{ person.lastname }}
+            </a>
+          }
+        </div>
+      </div>
+    } @empty {
+      <p>No documents found for this person.</p>
+    }
+  </div>
+</div>

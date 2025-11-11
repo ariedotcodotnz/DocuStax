@@ -104,8 +104,10 @@ npm run preview
 
 Documents are stored in the `documents/` directory. Each document has its own folder with:
 
-1. **metadata.json** - Document metadata (title, description, author, date, tags, category)
+1. **metadata.json** - Document metadata (title, description, author, date, tags, category, people)
 2. **document.html** - The HTML version of your document
+3. **document.pdf** - (Optional) The original PDF file
+4. **thumbnail.png** - (Auto-generated) Preview thumbnail
 
 Example `metadata.json`:
 ```json
@@ -115,17 +117,15 @@ Example `metadata.json`:
   "author": "Legal Department",
   "date": "2024-01-01",
   "tags": ["legal", "policy", "privacy"],
-  "category": "Legal Documents"
+  "category": "Legal Documents",
+  "people": [
+    { "firstname": "Jane", "lastname": "Doe" },
+    { "firstname": "John", "lastname": "Smith" }
+  ]
 }
 ```
 
-Then register your document in `documents/manifest.json`:
-```json
-[
-  "privacy-policy-2024",
-  "your-new-document-slug"
-]
-```
+**That's it!** The `manifest.json` file is automatically generated during build or dev runs by scanning the documents directory. Simply create a new folder with a `metadata.json` file, and it will be automatically detected.
 
 ### Configuration
 
@@ -140,15 +140,21 @@ Customize DocuStax by modifying:
 ```
 DocuStax/
 ├── documents/              # Document storage
-│   ├── manifest.json      # List of all documents
+│   ├── manifest.json      # Auto-generated list of all documents
 │   └── [document-slug]/   # Individual document folders
-│       ├── metadata.json  # Document metadata
-│       └── document.html  # Document content
+│       ├── metadata.json  # Document metadata (required)
+│       ├── document.html  # Document content (required)
+│       ├── document.pdf   # Original PDF (optional)
+│       └── thumbnail.png  # Auto-generated preview
 ├── src/
 │   ├── components/        # Reusable Angular components
 │   ├── services/          # Business logic and data services
 │   ├── models/            # TypeScript interfaces and types
 │   └── app.component.*    # Main application component
+├── scripts/               # Build-time automation scripts
+│   ├── generate-manifest.mjs    # Auto-generate document list
+│   ├── generate-thumbnails.mjs  # Generate PDF thumbnails
+│   └── generate-sitemap.mjs     # Generate SEO sitemap
 ├── angular.json           # Angular CLI configuration
 ├── tailwind.config.js     # TailwindCSS configuration
 └── package.json           # Project dependencies

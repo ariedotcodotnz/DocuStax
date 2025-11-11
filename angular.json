@@ -19,7 +19,12 @@
             "browser": "index.tsx",
             "tsConfig": "tsconfig.json",
             "assets": [
-              "documents"
+              "documents",
+              {
+                "glob": "robots.txt",
+                "input": "public",
+                "output": "/"
+              }
             ]
           },
           "configurations": {

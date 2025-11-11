@@ -86,11 +86,23 @@ export class DocumentService {
           `url("documents/${slug}/$2")`
         );
 
+        // Check if thumbnail exists
+        let thumbnailUrl: string | undefined;
+        try {
+          const thumbnailResponse = await fetch(`documents/${slug}/thumbnail.png`, { method: 'HEAD' });
+          if (thumbnailResponse.ok) {
+            thumbnailUrl = `documents/${slug}/thumbnail.png`;
+          }
+        } catch {
+          // Thumbnail doesn't exist, that's okay
+        }
+
         return {
           slug,
           metadata,
           htmlContent,
           pdfUrl: `documents/${slug}/document.pdf`,
+          thumbnailUrl,
         };
       }));
       

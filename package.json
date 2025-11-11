@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "ng serve",
-    "build": "ng build",
+    "build": "npm run build:thumbnails && ng build && npm run build:sitemap",
+    "build:thumbnails": "node scripts/generate-thumbnails.mjs",
+    "build:sitemap": "node scripts/generate-sitemap.mjs",
     "preview": "ng serve --configuration=production"
   },
   "dependencies": {

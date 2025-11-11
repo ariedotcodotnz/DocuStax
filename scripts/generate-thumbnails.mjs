@@ -67,11 +67,13 @@ const generateAllThumbnails = async () => {
 
   // Check if poppler is installed
   if (!checkPoppler()) {
-    console.error('❌ Error: pdftoppm (poppler-utils) is not installed.');
-    console.error('\nPlease install poppler:');
-    console.error('  Ubuntu/Debian: sudo apt-get install poppler-utils');
-    console.error('  macOS: brew install poppler');
-    process.exit(1);
+    console.warn('⚠️  Warning: pdftoppm (poppler-utils) is not installed.');
+    console.warn('   Thumbnail generation will be skipped.');
+    console.warn('\nTo generate thumbnails locally, install poppler:');
+    console.warn('  Ubuntu/Debian: sudo apt-get install poppler-utils');
+    console.warn('  macOS: brew install poppler');
+    console.warn('\n✅ Build will continue using existing thumbnails.\n');
+    process.exit(0);
   }
 
   // Read manifest
